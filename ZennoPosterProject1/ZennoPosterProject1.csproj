@@ -89,7 +89,9 @@
     <Compile Include="Parsers\ParserUsers\ListGenerator\UsersContestNotFriends.cs" />
     <Compile Include="Parsers\ParserUsers\Lists.cs" />
     <Compile Include="Parsers\ParserUsers\ParsingContestUsers.cs" />
+    <Compile Include="Parsers\ParserUsers\ParsingDialogAndMessage.cs" />
     <Compile Include="Parsers\ParserUsers\ParsingFriends.cs" />
+    <Compile Include="Parsers\ParserUsers\ParsingFriendsNotAccepted.cs" />
     <Compile Include="Parsers\ParserUsers\UsersParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -29,20 +29,21 @@ namespace UserParser.Parsers.ListGenerator
                 {
                     if (Friend.ToLower() == Contest.ToLower())
                     {
-                        ListOutput.Add("https://rt.pornhub.com/model/" + Friend);
+                        ListOutput.Add( "https://rt.pornhub.com/model/" + Friend);
                         counter++;
                     }
                 }
             }
-            string path = "FriendsInContest.html";
+            string path = project.Directory + @"/Result/FriendsInContest.txt";
 
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
             File.WriteAllLines(path, ListOutput, Encoding.UTF8);
-            return ListOutput;
+            
             project.SendInfoToLog("Закончили.", true);
+            return ListOutput;
         }
     }
 }

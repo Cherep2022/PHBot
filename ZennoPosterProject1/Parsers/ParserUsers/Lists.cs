@@ -13,11 +13,13 @@ namespace ZennoPosterProject1.Parsers.ParserUsers
         readonly IZennoPosterProjectModel project;
         public List<string> UsersInContest { get; set; }
         public List<string> Friends{ get; set; }
+        public List<string> FriendsNotAccepted { get; set; }
 
         public Lists(IZennoPosterProjectModel project)
         {
             this.UsersInContest = new ParsingContestUsers(project).StartContestParsing();
             this.Friends = new ParsingFriends(project).StartFriendParsing();
+            this.FriendsNotAccepted = new ParsingFriendsNotAccepted(project).StartFriendsNoAcceptedParsing();
         }
 
     }
