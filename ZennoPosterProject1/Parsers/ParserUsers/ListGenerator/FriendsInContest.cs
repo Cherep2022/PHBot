@@ -1,12 +1,8 @@
-﻿using Parsers;
-using System;
+﻿
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZennoLab.InterfacesLibrary.ProjectModel;
-using ZennoPosterProject1.Parsers.ParserUsers;
+using ZennoPosterProject1.DataBase.Model;
+using ZennoPosterProject1.DataBase.Tables;
 
 namespace UserParser.Parsers.ListGenerator
 {
@@ -18,11 +14,34 @@ namespace UserParser.Parsers.ListGenerator
         {
             this.project = project;
         }
-        public List<string> GenerateFriendsInContestList(List<string> UsersContestList, List<string> UserFriendsList)
+        public void GenerateFriendsInContestList()
         {
             project.SendInfoToLog("Генерируем лист друзей участвующих в конкурсе.", true);
             var ListOutput = new List<string>();
             int counter = 1;
+
+            List<string> UserFriendsList = new List<string>();
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
+            {
+                foreach (var VARIABLE in dataBaseModelContainer.AccountFriends)
+                {
+                    UserFriendsList.Add(VARIABLE.UserName);
+                }
+            }
+
+            List<string> UsersContestList = new List<string>();
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
+            {
+                foreach (var VARIABLE in dataBaseModelContainer.UserContests)
+                {
+                    UsersContestList.Add(VARIABLE.UserName);
+                }
+            }
+
+
+
+
+
             foreach (var Friend in UserFriendsList)
             {
                 foreach (var Contest in UsersContestList)
@@ -34,16 +53,21 @@ namespace UserParser.Parsers.ListGenerator
                     }
                 }
             }
-            string path = project.Directory + @"/Result/FriendsInContest.txt";
 
-            if (File.Exists(path))
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
             {
-                File.Delete(path);
+                dataBaseModelContainer.Database.ExecuteSqlCommand("TRUNCATE TABLE [FriendsInContest]");
+                foreach (var htmlNode in ListOutput)
+                {
+                    FriendInContest friendInContest = new FriendInContest();
+                    friendInContest.UserName = htmlNode.ToLower().Replace(" ", "-");
+                    dataBaseModelContainer.FriendInContests.Add(friendInContest);
+                }
+                dataBaseModelContainer.SaveChanges();
             }
-            File.WriteAllLines(path, ListOutput, Encoding.UTF8);
-            
+
+
             project.SendInfoToLog("Закончили.", true);
-            return ListOutput;
         }
     }
 }

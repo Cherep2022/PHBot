@@ -30,8 +30,8 @@ namespace ZennoPosterProject1.Parsers.ParserUsers
 
         public void StartListGenerator()
         { 
-            friendsInContest.GenerateFriendsInContestList(UserList.UsersInContest, UserList.Friends);
-            usersContestNotFriends.GenerateUsersContestNotFriendsList(UserList.UsersInContest, UserList.Friends, UserList.FriendsNotAccepted);
+            friendsInContest.GenerateFriendsInContestList();
+            usersContestNotFriends.GenerateUsersContestNotFriendsList();
         }
     }
 }

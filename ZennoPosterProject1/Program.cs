@@ -20,6 +20,7 @@ using UserParser;
 using ZennoPosterProject1.Parsers.ParserUsers;
 using System.Security.Policy;
 using Global.ZennoExtensions;
+using ZennoPosterProject1.DataBase.Tables;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ZennoPosterProject1
@@ -37,10 +38,9 @@ namespace ZennoPosterProject1
         /// <returns>Код выполнения скрипта</returns>		
         public int Execute(Instance instance, IZennoPosterProjectModel project)
         {
-            new ParsingDialogAndMessage(project).StartDialogAndMessageParsing();
+            new UsersParser(project,instance).StartListGenerator();
 
-
-
+            
 
 
             //SwipeAndClick swipeAndClick = new SwipeAndClick(instance, project);

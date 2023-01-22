@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ZennoLab.CommandCenter;
 using ZennoLab.InterfacesLibrary.ProjectModel;
+using ZennoPosterProject1.DataBase.Model;
+using ZennoPosterProject1.DataBase.Tables;
 using ZennoPosterProject1.Parsers.ParserUsers;
 
 namespace UserParser.Parsers.ListGenerator
@@ -20,8 +22,35 @@ namespace UserParser.Parsers.ListGenerator
             this.project = project;
             this.instance = instance;
         }
-        public List<string> GenerateUsersContestNotFriendsList(List<string> UsersContestList, List<string> UserFriendsList, List<string> UserFriendsNotAcceptedList)
+        public void GenerateUsersContestNotFriendsList()
         {
+            List<string> UserFriendsList = new List<string>();
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
+            {
+                foreach (var VARIABLE in dataBaseModelContainer.AccountFriends)
+                {
+                    UserFriendsList.Add(VARIABLE.UserName);
+                }
+            }
+
+            List<string> UsersContestList = new List<string>();
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
+            {
+                foreach (var VARIABLE in dataBaseModelContainer.UserContests)
+                {
+                    UsersContestList.Add(VARIABLE.UserName);
+                }
+            }
+
+            List<string> UserFriendsNotAcceptedList = new List<string>();
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
+            {
+                foreach (var VARIABLE in dataBaseModelContainer.FriendNotAccepteds)
+                {
+                    UserFriendsNotAcceptedList.Add(VARIABLE.UserName);
+                }
+            }
+
             project.SendInfoToLog("Генерируем лист участников конкурса которых нет в друзьях.", true);
             int counter = 1;
             
@@ -57,18 +86,23 @@ namespace UserParser.Parsers.ListGenerator
                 ListC.Add("https://rt.pornhub.com/model/" + VARIABLE);
                 counter++;
             }
-            project.SendInfoToLog("Закончили.", true);
 
 
-            string path = project.Directory + @"/Result/UsersInContestNotFriends.txt";
-
-            if (File.Exists(path))
+            using (PornHubDb dataBaseModelContainer = new PornHubDb())
             {
-                File.Delete(path);
+                dataBaseModelContainer.Database.ExecuteSqlCommand("TRUNCATE TABLE [UsersContestNotFriends]");
+                foreach (var htmlNode in ListC)
+                {
+                    UserContestNotFriend userContestNotFriend = new UserContestNotFriend();
+                    userContestNotFriend.UserName = htmlNode.ToLower().Replace(" ", "-");
+                    dataBaseModelContainer.UserContestNotFriends.Add(userContestNotFriend);
+                }
+                dataBaseModelContainer.SaveChanges();
             }
-            File.WriteAllLines(path, ListC, Encoding.UTF8);
+
+
             project.SendInfoToLog("Закончили.", true);
-            return ListC;
+
         }
     }
 }
